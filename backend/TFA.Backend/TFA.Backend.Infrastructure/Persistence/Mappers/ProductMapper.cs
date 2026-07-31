@@ -39,6 +39,7 @@ namespace TFA.Backend.Infrastructure.Persistence.Mappers
                 ReorderLevel = product.ReorderLevel,
                 Discontinued = product.Discontinued,
                 Category = product.Category != null ? CategoryMapper.ToEntity(product.Category) : null,
+                Supplier = product.Supplier != null ? SupplierMapper.ToEntity(product.Supplier) : null
             };
         }
     }

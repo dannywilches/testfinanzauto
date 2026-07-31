@@ -56,20 +56,14 @@ namespace TFA.Backend.Infrastructure.Persistence.Repositories
             var query = _dbContext.Products
                 .AsNoTracking()
                 .Include(x => x.Category)
+                .Include(x => x.Supplier)
                 .AsQueryable();
-
-            // Filtro Categoria
-            if (!string.IsNullOrEmpty(filter.Category))
-            {
-                query = query
-                    .Where(p => p.Category.CategoryName == filter.Category);
-            }
 
             // Filtro de búsqueda
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 query = query
-                    .Where(p => p.ProductName.Contains(filter.Search, StringComparison.OrdinalIgnoreCase));
+                    .Where(p => p.ProductName.ToLower().Contains(filter.Search.ToLower()));
             }
 
             var totalItems = await query.CountAsync();
@@ -108,6 +102,7 @@ namespace TFA.Backend.Infrastructure.Persistence.Repositories
         {
             var product = await _dbContext.Products
                 .AsNoTracking()
+                .Include(x => x.Category)
                 .FirstOrDefaultAsync(p => p.ProductID == productId, ct);
             return ProductMapper.ToEntity(product);
         }

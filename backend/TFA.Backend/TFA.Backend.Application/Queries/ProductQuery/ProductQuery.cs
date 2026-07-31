@@ -3,7 +3,6 @@
     public record ProductsQuery(
         int Page,
         int PageSize,
-        string? Category,
         string? Search
     );
 }

@@ -11,8 +11,11 @@ using TFA.Backend.Application.Interfaces.Auth;
 using TFA.Backend.Application.Interfaces.Category;
 using TFA.Backend.Application.Interfaces.Product;
 using TFA.Backend.Application.Interfaces.Services;
+using TFA.Backend.Application.Interfaces.Supplier;
+using TFA.Backend.Application.Queries.CategoryQuery;
 using TFA.Backend.Application.Queries.ProductDetailQuery;
 using TFA.Backend.Application.Queries.ProductQuery;
+using TFA.Backend.Application.Queries.SupplierQuery;
 using TFA.Backend.Application.Services;
 
 namespace TFA.Backend.Application
@@ -33,6 +36,8 @@ namespace TFA.Backend.Application
             // Queries
             services.AddScoped<IProductQueryHandler, ProductQueryHandler>();
             services.AddScoped<IProductDetailQueryHandler, ProductDetailQueryHandler>();
+            services.AddScoped<ICategoryQueryHandler, CategoryQueryHandler>();
+            services.AddScoped<ISupplierQueryHandler, SupplierQueryHandler>();
 
             // Add other application services here
             services.AddScoped<IProductGeneratorService, ProductGeneratorService>();

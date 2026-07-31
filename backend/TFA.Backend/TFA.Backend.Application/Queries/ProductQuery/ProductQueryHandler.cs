@@ -17,7 +17,6 @@ namespace TFA.Backend.Application.Queries.ProductQuery
             {
                 Page = query.Page,
                 PageSize = query.PageSize,
-                Category = query.Category,
                 Search = query.Search
             };
             var products = await _productRepository.GetAllProductsPaged(filter, ct);
@@ -29,6 +28,8 @@ namespace TFA.Backend.Application.Queries.ProductQuery
                 {
                     ProductID = p.ProductID,
                     ProductName = p.ProductName,
+                    Category = p.Category.CategoryName,
+                    Supplier = p.Supplier.CompanyName,
                     QuantityPerUnit = p.QuantityPerUnit,
                     UnitPrice = p.UnitPrice,
                     UnitsInStock = p.UnitsInStock,

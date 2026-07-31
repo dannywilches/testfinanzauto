@@ -14,11 +14,13 @@ namespace TFA.Backend.Api.Controllers
         private readonly ILogger<CategoryController> _logger;
         private readonly ICreateCategoryHandler _createCategoryHandler;
         private readonly IDeleteCategoryHandler _deleteCategoryHandler;
-        public CategoryController(ILogger<CategoryController> logger, ICreateCategoryHandler createCategoryHandler, IDeleteCategoryHandler deleteCategoryHandler)
+        private readonly ICategoryQueryHandler _categoryQueryHandler;
+        public CategoryController(ILogger<CategoryController> logger, ICreateCategoryHandler createCategoryHandler, IDeleteCategoryHandler deleteCategoryHandler, ICategoryQueryHandler categoryQueryHandler)
         {
             _logger = logger;
             _createCategoryHandler = createCategoryHandler;
             _deleteCategoryHandler = deleteCategoryHandler;
+            _categoryQueryHandler = categoryQueryHandler;
         }
 
         [HttpPost]
@@ -67,6 +69,30 @@ namespace TFA.Backend.Api.Controllers
             {
                 _logger.LogError(ex, "An error occurred while processing the request for Delete Category with ID: {CategoryId}", categoryId);
                 return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GeAllCategories(CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Start GetAllCategories");
+            try
+            {
+                _logger.LogInformation("Fetching categories");
+
+                var result = await _categoryQueryHandler.Handle(cancellationToken);
+                if (result == null)
+                {
+                    _logger.LogInformation("No categories found for the given query parameters");
+                    return NotFound("No categories found");
+                }
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching categories");
+                return StatusCode(500, "An error occurred while fetching categories");
             }
         }
     }

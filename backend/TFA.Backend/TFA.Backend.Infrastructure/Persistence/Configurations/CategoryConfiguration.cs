@@ -13,6 +13,10 @@ namespace TFA.Backend.Infrastructure.Persistence.Configurations
             builder.Property(x => x.CategoryName).HasColumnType("varchar(50)").IsRequired();
             builder.Property(x => x.Description).HasColumnType("text").IsRequired(false);
             builder.Property(x => x.Picture).HasColumnType("text").IsRequired(false);
+
+            builder.HasMany(x => x.Products)
+                .WithOne(x => x.Category)
+                .HasForeignKey(x => x.CategoryID);
         }
     }
 }

@@ -44,15 +44,14 @@ namespace TFA.Backend.Api.Controllers
         public async Task<IActionResult> GetProducts(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string? category = null,
             [FromQuery] string? search = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("GetProducts called with page: {Page}, pageSize: {PageSize}, category: {Category}, search: {Search}", page, pageSize, category, search);
+            _logger.LogInformation("GetProducts called with page: {Page}, pageSize: {PageSize}, search: {Search}", page, pageSize, search);
             try
             {
                 _logger.LogInformation("Fetching products");
-                var query = new ProductsQuery(page, pageSize, category, search);
+                var query = new ProductsQuery(page, pageSize, search);
 
                 var result = await _productQueryHandler.Handle(query, cancellationToken);
                 if (result == null || result.Items == null || !result.Items.Any())

@@ -33,6 +33,12 @@ namespace TFA.Backend.Infrastructure.Persistence.Repositories
             return true;
         }
 
+        public async Task<List<Category>> GetCategories(CancellationToken ct = default)
+        {
+            var categories = await _dbContext.Categories.AsNoTracking().ToListAsync(ct);
+            return categories.Select(CategoryMapper.ToEntity).ToList();
+        }
+
         public async Task<Category?> GetCategoryById(Guid categoryId, CancellationToken ct = default)
         {
             var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.CategoryID == categoryId, ct);

@@ -20,6 +20,10 @@ namespace TFA.Backend.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Country).HasColumnType("varchar(50)").IsRequired(false);
             builder.Property(x => x.Phone).HasColumnType("varchar(30)").IsRequired(false);
             builder.Property(x => x.Fax).HasColumnType("varchar(30)").IsRequired(false);
+
+            builder.HasMany(x => x.Products)
+                .WithOne(x => x.Supplier)
+                .HasForeignKey(x => x.SupplierID);
         }
     }
 }

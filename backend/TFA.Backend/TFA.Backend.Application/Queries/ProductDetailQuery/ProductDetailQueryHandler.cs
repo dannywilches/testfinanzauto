@@ -20,14 +20,15 @@ namespace TFA.Backend.Application.Queries.ProductDetailQuery
             {
                 ProductID = product.ProductID,
                 ProductName = product.ProductName,
-                Supplier = product.Supplier?.CompanyName ?? string.Empty,
-                Category = product.Category?.CategoryName ?? string.Empty,
+                SupplierID = product.SupplierID,
+                CategoryID = product.CategoryID,
                 QuantityPerUnit = product.QuantityPerUnit,
                 UnitPrice = product.UnitPrice,
                 UnitsInStock = product.UnitsInStock,
                 UnitsOnOrder = product.UnitsOnOrder,
                 ReorderLevel = product.ReorderLevel,
-                Discontinued = product.Discontinued
+                Discontinued = product.Discontinued,
+                PictureCategory = product.Category.Picture
             };
             return response;
         }
