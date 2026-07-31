@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import ProductForm from "../components/ProductForm";
 import { Card, Container } from "react-bootstrap";
 import { createProduct } from "../api/productService";
+import type { ProductFormData } from "../models/ProductFormData";
 
 export default function ProductsCreatePage() {
     const navigate = useNavigate();
 
-    const handleCreate = async (data: any) => {
+    const handleCreate = async (data: ProductFormData) => {
         await createProduct(data);
 
         navigate("/products");

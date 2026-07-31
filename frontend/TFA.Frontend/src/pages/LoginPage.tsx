@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { login as loginApi } from "../api/authService";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 
 export default function LoginPage() {

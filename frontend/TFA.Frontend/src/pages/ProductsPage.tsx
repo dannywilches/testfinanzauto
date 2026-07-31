@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { deleteProduct, getProducts } from "../api/productService";
 import { Form, Button, Card, Container, Table, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "react-bootstrap";
 import { useDebounce } from "use-debounce";
+import type { ProductList } from "../models/ProductList";
 
 export default function ProductsPage() {
     
@@ -16,26 +17,21 @@ export default function ProductsPage() {
     const [totalPages, setTotalPages] = useState(0);
     const [debouncedSearch] = useDebounce(search, 500);
 
-    useEffect(() => {
-        loadProducts();
-
-    }, [page, debouncedSearch]);
-
-    const loadProducts = async () => {
+    
+    const loadProducts = useCallback(async () => {
         const data = await getProducts(page, pageSize, debouncedSearch);
         setProducts(data.items);
         setTotalPages(data.totalPages)
-        console.log(data.items);
-    };
-
+    }, [page, debouncedSearch]);
+    
     const editProduct = async (id:string) => {
         navigate(`/products/edit/${id}`);
     };
-
+    
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+    
     const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-
+    
     const openDeleteModal = ( productId: string ) => {
         setSelectedProductId(productId);
         setShowDeleteModal(true);
@@ -52,7 +48,16 @@ export default function ProductsPage() {
             alert("Error eliminando producto");
         }
     };
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
 
+            loadProducts();
+        }, 0)
+
+        return () => clearTimeout(timer)
+    }, [loadProducts]);
+    
     const items = [];
     const startPage = Math.max(1, page - 2);
     const endPage = Math.min(totalPages, page + 2);
@@ -81,7 +86,7 @@ export default function ProductsPage() {
                 <Card.Header>
                     <Row>
                         <Col>
-                            <h5 className="fw-bold">Editar Producto</h5>
+                            <h5 className="fw-bold">Lista de Productos</h5>
                         </Col>
                         <Col>
                             <Form.Control
@@ -116,7 +121,7 @@ export default function ProductsPage() {
                         </thead>
 
                         <tbody>
-                            {products.map((p: any) => (
+                            {products.map((p: ProductList) => (
                                 <tr key={p.productID}>
                                     <td>{p.productName}</td>
                                     <td>{p.category}</td>

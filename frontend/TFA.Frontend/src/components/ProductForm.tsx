@@ -6,6 +6,9 @@ import { getCategories } from "../api/categoryService";
 import { getSuppliers } from "../api/supplierService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { ProductFormData } from "../models/ProductFormData";
+import type { Categories } from "../models/Categories";
+import type { Suppliers } from "../models/Suppliers";
 
 const schema = yup.object({
 
@@ -57,8 +60,8 @@ const schema = yup.object({
 });
 
 interface ProductFormProps {
-    onSubmit: (data: any) => Promise<void>;
-    initialData?: any;
+    onSubmit: (data: ProductFormData) => Promise<void>;
+    initialData?: ProductFormData;
     buttonText?: string
 }
 
@@ -73,8 +76,8 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
         defaultValues: initialData
     });
 
-    const[categories, setCategories] = useState<any[]>([]);
-    const[suppliers, setSuppliers] = useState<any[]>([]);
+    const[categories, setCategories] = useState<Categories[]>([]);
+    const[suppliers, setSuppliers] = useState<Suppliers[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -120,7 +123,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
 
                         <Form.Select {...register("categoryID")} aria-label="Selecciona una opción">
                             <option></option>
-                            {categories.map((p: any) => (
+                            {categories.map((p: Categories) => (
                                 <option key={p.categoryID} value={p.categoryID}>{p.categoryName}</option>
                             ))}
                         </Form.Select>
@@ -137,7 +140,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
 
                         <Form.Select {...register("supplierID")} aria-label="Selecciona una opción">
                             <option></option>
-                            {suppliers.map((p: any) => (
+                            {suppliers.map((p: Suppliers) => (
                                 <option key={p.supplierID} value={p.supplierID}>{p.companyName}</option>
                             ))}
                         </Form.Select>

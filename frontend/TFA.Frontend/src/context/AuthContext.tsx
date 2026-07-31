@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
 interface AuthContextType {
     token: string | null;
@@ -8,7 +8,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>(null!);
 
-export const AuthProvider = ({ children }: any) => {
+export default function AuthProvider ({ children }: { children: React.ReactNode}) {
 
     const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -34,5 +34,5 @@ export const AuthProvider = ({ children }: any) => {
         </AuthContext.Provider>
     );
 };
-
-export const useAuth = () => useContext(AuthContext);
+export { AuthContext }
+// export const useAuth = () => useContext(AuthContext);

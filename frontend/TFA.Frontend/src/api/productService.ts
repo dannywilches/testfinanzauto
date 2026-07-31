@@ -1,3 +1,4 @@
+import type { ProductFormData } from "../models/ProductFormData";
 import api from "./axios";
 
 export const getProducts = async (page: number, pageSize: number, search: string) => {
@@ -16,12 +17,12 @@ export const getProductById = async (id:string) => {
     return response.data;
 };
 
-export const createProduct = async (data: any) => {
+export const createProduct = async (data: ProductFormData) => {
     const response = await api.post("/products", data);
     return response.data;
 };
 
-export const updateProduct = async (id: string, data: any) => {
+export const updateProduct = async (id: string, data: ProductFormData) => {
     const response = await api.put(
         `/products/${id}`,
         data

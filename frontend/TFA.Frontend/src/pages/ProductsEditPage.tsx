@@ -3,6 +3,7 @@ import { Container, Card} from "react-bootstrap";
 import { getProductById, updateProduct } from "../api/productService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import type { ProductFormData } from "../models/ProductFormData";
 
 export default function ProductsEditPage() {
     
@@ -10,24 +11,25 @@ export default function ProductsEditPage() {
 
     const navigate = useNavigate();
 
-    const[product, setProduct] = useState<any>(null);
-
+    const[product, setProduct] = useState<ProductFormData>();
+    
     useEffect(() => {
+        const loadProduct = async () => {
+            if (!id) {
+                navigate("/products");
+                return;
+            }
+    
+            const data = await getProductById(id);
+            setProduct(data);
+    
+        };
+
         loadProduct();
     }, []);
 
-    const loadProduct = async () => {
-        if (!id) {
-            navigate("/products");
-            return;
-        }
 
-        const data = await getProductById(id);
-        setProduct(data);
-
-    };
-
-    const handleUpdate = async (data: any) => {
+    const handleUpdate = async (data: ProductFormData) => {
 
         if (!id) return;
         await updateProduct(id, data);
