@@ -4,7 +4,7 @@ using TFA.Backend.Application.Interfaces.Auth;
 
 namespace TFA.Backend.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
