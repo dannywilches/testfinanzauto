@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: backend/TFA.Backend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,13 +27,13 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restaurar paquetes
-        run: dotnet restore
+        run: dotnet restore TFA.Backend.sln
 
       - name: Compilar Backend
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build TFA.Backend.sln --configuration Release --no-restore
 
       - name: Ejecutar pruebas
-        run: dotnet test --no-build --configuration Release || true
+        run: dotnet test TFA.Backend.sln --configuration Release --no-build
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
           docker build \
             -f backend/TFA.Backend.Api/Dockerfile \
             -t backend \
-            ./backend
+            ./backend/TFA.Backend
 
       - name: Construir imagen Frontend
         run: |
