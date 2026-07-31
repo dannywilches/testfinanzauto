@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TFA.Backend.Application.Commands.ProductCommand.BulkCreateProduct;
 using TFA.Backend.Application.Commands.ProductCommand.CreateProduct;
 using TFA.Backend.Application.Commands.ProductCommand.DeleteProduct;
 using TFA.Backend.Application.Commands.ProductCommand.UpdateProduct;
@@ -8,6 +10,7 @@ using TFA.Backend.Application.Queries.ProductQuery;
 
 namespace TFA.Backend.Api.Controllers
 {
+    [Authorize]
     [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -18,13 +21,16 @@ namespace TFA.Backend.Api.Controllers
         private readonly ICreateProductHandler _createProductHandler;
         private readonly IUpdateProductHandler _updateProductHandler;
         private readonly IDeleteProductHandler _deleteProductHandler;
+        private readonly IBulkCreateProductsHandler _bulkCreateProductsHandler;
         public ProductController(
-            ILogger<ProductController> logger, 
-            IProductDetailQueryHandler productDetailQueryHandler, 
-            IProductQueryHandler productQueryHandler, 
-            ICreateProductHandler createProductHandler, 
-            IUpdateProductHandler updateProductHandler, 
-            IDeleteProductHandler deleteProductHandler)
+            ILogger<ProductController> logger,
+            IProductDetailQueryHandler productDetailQueryHandler,
+            IProductQueryHandler productQueryHandler,
+            ICreateProductHandler createProductHandler,
+            IUpdateProductHandler updateProductHandler,
+            IDeleteProductHandler deleteProductHandler,
+            IBulkCreateProductsHandler bulkCreateProductsHandler
+            )
         {
             _logger = logger;
             _productDetailQueryHandler = productDetailQueryHandler;
@@ -32,6 +38,7 @@ namespace TFA.Backend.Api.Controllers
             _createProductHandler = createProductHandler;
             _updateProductHandler = updateProductHandler;
             _deleteProductHandler = deleteProductHandler;
+            _bulkCreateProductsHandler = bulkCreateProductsHandler;
         }
         [HttpGet]
         public async Task<IActionResult> GetProducts(
@@ -99,14 +106,14 @@ namespace TFA.Backend.Api.Controllers
             {
                 var command = new CreateProductCommand(
                     Guid.NewGuid(),
-                    request.ProductName, 
-                    request.SupplierID, 
-                    request.CategoryID, 
-                    request.QuantityPerUnit, 
-                    request.UnitPrice, 
-                    request.UnitsInStock, 
-                    request.UnitsOnOrder, 
-                    request.ReorderLevel, 
+                    request.ProductName,
+                    request.SupplierID,
+                    request.CategoryID,
+                    request.QuantityPerUnit,
+                    request.UnitPrice,
+                    request.UnitsInStock,
+                    request.UnitsOnOrder,
+                    request.ReorderLevel,
                     request.Discontinued
                 );
                 var result = await _createProductHandler.Handle(command, cancellationToken);
@@ -181,6 +188,28 @@ namespace TFA.Backend.Api.Controllers
             {
                 _logger.LogError(ex, "An error occurred while deleting product with ID: {ProductId}", productId);
                 return StatusCode(500, "An error occurred while deleting the product");
+            }
+        }
+
+        [HttpPost("bulk")]
+        public async Task<IActionResult> CreateProductsBulk([FromBody] BulkCreateProductsRequestDto request, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Creating products in bulk");
+            try
+            {
+                var command = new BulkCreateProductsCommand(request.Quantity, request.CategoryID, request.SupplierID);
+                var execution = await _bulkCreateProductsHandler.Handle(command, cancellationToken);
+                if (execution.Processed <= 0)
+                {
+                    _logger.LogWarning("Failed to create some products in bulk");
+                    return BadRequest("Failed to create some products");
+                }
+                return Created("/products/bulk", execution);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating products in bulk");
+                return StatusCode(500, "An error occurred while creating products in bulk");
             }
         }
     }

@@ -11,5 +11,6 @@ namespace TFA.Backend.Domain.Repositories
         Task<Product?> GetProductById(Guid productId, CancellationToken ct = default);
         Task<PagedResult<Product>> GetAllProductsPaged(ProductFilter filter, CancellationToken ct = default);
         Task<bool> UpdateProduct(Product product, CancellationToken ct = default);
+        Task BulkCreateProducts(IEnumerable<Product> products, CancellationToken ct = default);
     }
 }

@@ -17,6 +17,14 @@ namespace TFA.Backend.Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
+
+        public async Task BulkCreateProducts(IEnumerable<Product> products, CancellationToken ct = default)
+        {
+            var productModels = products.Select(ProductMapper.ToModel).ToList();
+            await _dbContext.Products.AddRangeAsync(productModels, ct);
+            await _dbContext.SaveChangesAsync(ct);
+        }
+
         public async Task<Product?> CreateProduct(Product product, CancellationToken ct = default)
         {
             var productModel = ProductMapper.ToModel(product);

@@ -3,14 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using TFA.Backend.Application.Commands.Auth;
 using TFA.Backend.Application.Commands.CategoryCommand.CreateCategory;
 using TFA.Backend.Application.Commands.CategoryCommand.DeleteCategory;
+using TFA.Backend.Application.Commands.ProductCommand.BulkCreateProduct;
 using TFA.Backend.Application.Commands.ProductCommand.CreateProduct;
 using TFA.Backend.Application.Commands.ProductCommand.DeleteProduct;
 using TFA.Backend.Application.Commands.ProductCommand.UpdateProduct;
 using TFA.Backend.Application.Interfaces.Auth;
 using TFA.Backend.Application.Interfaces.Category;
 using TFA.Backend.Application.Interfaces.Product;
+using TFA.Backend.Application.Interfaces.Services;
 using TFA.Backend.Application.Queries.ProductDetailQuery;
 using TFA.Backend.Application.Queries.ProductQuery;
+using TFA.Backend.Application.Services;
 
 namespace TFA.Backend.Application
 {
@@ -25,12 +28,14 @@ namespace TFA.Backend.Application
             services.AddScoped<IUpdateProductHandler, UpdateProductHandler>();
             services.AddScoped<ICreateProductHandler, CreateProductHandler>();
             services.AddScoped<IDeleteProductHandler, DeleteProductHandler>();
+            services.AddScoped<IBulkCreateProductsHandler, BulkCreateProductsHandler>();
 
             // Queries
             services.AddScoped<IProductQueryHandler, ProductQueryHandler>();
             services.AddScoped<IProductDetailQueryHandler, ProductDetailQueryHandler>();
 
             // Add other application services here
+            services.AddScoped<IProductGeneratorService, ProductGeneratorService>();
             services.AddScoped<PasswordHasher<string>>();
 
             return services;
