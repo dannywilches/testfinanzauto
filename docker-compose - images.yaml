@@ -1,0 +1,38 @@
+services:
+  db-postgre-test:
+    image: postgres:16
+    container_name: db-postgre-test
+    environment:
+      POSTGRES_USER: user_postgres
+      POSTGRES_PASSWORD: TestFinanzauto@
+      POSTGRES_DB: CatalogDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend.api:
+    container_name: backend.api
+    image: dannywilches97/tfa.backend.api:latest
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TZ=America/Bogota
+      - ConnectionStrings__DefaultConnection=Host=db-postgre-test;Port=5432;Database=CatalogDb;Username=user_postgres;Password=TestFinanzauto@
+      - AllowedOrigins__0=http://localhost:5002
+      - AllowedOrigins__1=http://localhost:5173
+
+  frontend.ui:
+    container_name: frontend.ui
+    image: dannywilches97/tfa.frontend.ui:latest
+    # build:
+    #   context: ./frontend/TFA.Frontend
+    environment:
+      - API_URL= http://localhost:5001/api
+    ports:
+      - "5002:80"
+
+volumes:
+  postgres_data:
+    driver: local

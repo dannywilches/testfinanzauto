@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function ProductsEditPage() {
     
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
 
     const navigate = useNavigate();
 
@@ -17,12 +17,19 @@ export default function ProductsEditPage() {
     }, []);
 
     const loadProduct = async () => {
+        if (!id) {
+            navigate("/products");
+            return;
+        }
+
         const data = await getProductById(id);
         setProduct(data);
-        console.log(data);
+
     };
 
     const handleUpdate = async (data: any) => {
+
+        if (!id) return;
         await updateProduct(id, data);
 
         navigate("/products");

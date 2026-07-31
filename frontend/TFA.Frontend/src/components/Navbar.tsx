@@ -1,8 +1,8 @@
 import { Navbar, Container, Nav, Button } from "react-bootstrap"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, type NavigateFunction } from "react-router-dom";
 
 
-const logout = (navigate) => {
+const logout = (navigate: NavigateFunction) => {
     localStorage.removeItem("token");
     navigate("/");
 };

@@ -5,7 +5,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { getCategories } from "../api/categoryService";
 import { getSuppliers } from "../api/supplierService";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
 
@@ -75,6 +75,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
 
     const[categories, setCategories] = useState<any[]>([]);
     const[suppliers, setSuppliers] = useState<any[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadFormData = async() => {
@@ -108,7 +109,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                             {...register("productName")}
                         />
                         <small className="text-danger">
-                            {errors.productName?.message}
+                            {String(errors.productName?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -125,7 +126,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         </Form.Select>
 
                         <small className="text-danger">
-                            {errors.category?.message}
+                            {String(errors.categoryID?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -142,7 +143,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         </Form.Select>
 
                         <small className="text-danger">
-                            {errors.supplier?.message}
+                            {String(errors.supplierID?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -157,7 +158,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         />
 
                         <small className="text-danger">
-                            {errors.quantityPerUnit?.message}
+                            {String(errors.quantityPerUnit?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -173,7 +174,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         />
 
                         <small className="text-danger">
-                            {errors.unitPrice?.message}
+                            {String(errors.unitPrice?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -188,7 +189,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         />
 
                         <small className="text-danger">
-                            {errors.unitsInStock?.message}
+                            {String(errors.unitsInStock?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -205,7 +206,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         />
 
                         <small className="text-danger">
-                            {errors.unitsOnOrder?.message}
+                            {String(errors.unitsOnOrder?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -219,7 +220,7 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                         />
 
                         <small className="text-danger">
-                            {errors.reorderLevel?.message}
+                            {String(errors.reorderLevel?.message ?? "")}
                         </small>
                     </Form.Group>
                 </Col>
@@ -246,8 +247,8 @@ export default function ProductForm({onSubmit, initialData, buttonText="Guardar"
                     </Button>
                     <Button
                         variant="danger"
-                        as={Link} to="/products"
-                        >
+                        onClick={() => navigate("/products")}
+                    >
                         Cancelar
                     </Button>
                 </Col>

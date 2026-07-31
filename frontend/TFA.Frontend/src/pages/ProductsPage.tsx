@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getProducts } from "../api/productService";
-import { Form, Button, Card, Container, Table, Row, Col } from "react-bootstrap";
+import { deleteProduct, getProducts } from "../api/productService";
+import { Form, Button, Card, Container, Table, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "react-bootstrap";
 import { useDebounce } from "use-debounce";
@@ -32,10 +32,29 @@ export default function ProductsPage() {
         navigate(`/products/edit/${id}`);
     };
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+
+    const openDeleteModal = ( productId: string ) => {
+        setSelectedProductId(productId);
+        setShowDeleteModal(true);
+    };
+    
+    const confirmDelete = async () => {
+        if (!selectedProductId) return;
+        try {
+            await deleteProduct(selectedProductId);
+            setShowDeleteModal(false);
+            loadProducts();
+        }
+        catch {
+            alert("Error eliminando producto");
+        }
+    };
+
     const items = [];
-
     const startPage = Math.max(1, page - 2);
-
     const endPage = Math.min(totalPages, page + 2);
 
     for (
@@ -92,6 +111,7 @@ export default function ProductsPage() {
                                 <th>Cantidad por Unidad</th>
                                 <th>Proveedor</th>
                                 <th>Acciones</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
 
@@ -106,6 +126,7 @@ export default function ProductsPage() {
                                     <td>{p.quantityPerUnit}</td>
                                     <td>{p.supplier}</td>
                                     <td><Button onClick={() => editProduct(p.productID)}>Editar</Button></td>
+                                    <td><Button variant="danger" onClick={() => openDeleteModal(p.productID)}>Eliminar</Button></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -144,6 +165,38 @@ export default function ProductsPage() {
                     </Pagination>
                 </Card.Body>
             </Card>
+            <Modal
+                show={showDeleteModal}
+                onHide={() =>
+                    setShowDeleteModal(false)
+                }
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Confirmar eliminación
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Está seguro de eliminar este
+                    producto?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={() =>
+                            setShowDeleteModal(false)
+                        }
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={confirmDelete}
+                    >
+                        Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 }

@@ -13,9 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TFA.Backend.Api/TFA.Backend.Api.csproj", "TFA.Backend.Api/"]
-COPY ["TFA.Backend.Application/TFA.Backend.Application.csproj", "TFA.Backend.Application/"]
-COPY ["TFA.Backend.Domain/TFA.Backend.Domain.csproj", "TFA.Backend.Domain/"]
-COPY ["TFA.Backend.Infrastructure/TFA.Backend.Infrastructure.csproj", "TFA.Backend.Infrastructure/"]
 RUN dotnet restore "./TFA.Backend.Api/TFA.Backend.Api.csproj"
 COPY . .
 WORKDIR "/src/TFA.Backend.Api"

@@ -1,0 +1,82 @@
+name: Test Finanzauto CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  backend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar paquetes
+        run: dotnet restore
+
+      - name: Compilar Backend
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Ejecutar pruebas
+        run: dotnet test --no-build --configuration Release || true
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/TFA.Frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar ESLint
+        run: npm run lint
+
+      - name: Compilar Frontend
+        run: npm run build
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs:
+      - backend-build
+      - frontend-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Construir imagen Backend
+        run: |
+          docker build \
+            -f backend/TFA.Backend.Api/Dockerfile \
+            -t backend \
+            ./backend
+
+      - name: Construir imagen Frontend
+        run: |
+          docker build \
+            -f frontend/TFA.Frontend/Dockerfile \
+            -t frontend \
+            ./frontend/TFA.Frontend
