@@ -70,7 +70,7 @@ jobs:
       - name: Construir imagen Backend
         run: |
           docker build \
-            -f backend/TFA.Backend.Api/Dockerfile \
+            -f backend/TFA.Backend/TFA.Backend.Api/Dockerfile \
             -t backend \
             ./backend/TFA.Backend
 
