@@ -1,6 +1,61 @@
-@TFA.Backend.Api_HostAddress = http://localhost:5289
+@TFA.Backend.Api_HostAddress = https://localhost:7099
 
-GET {{TFA.Backend.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+
+###
+
+POST {{TFA.Backend.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  //LoginRequestDto
+}
+
+###
+
+POST {{TFA.Backend.Api_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  //CreateCategoryRequestDto
+}
+
+###
+
+GET {{TFA.Backend.Api_HostAddress}}/api/products
+
+###
+
+POST {{TFA.Backend.Api_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  //CreateProductRequestDto
+}
+
+###
+
+POST {{TFA.Backend.Api_HostAddress}}/api/products/bulk
+Content-Type: application/json
+
+{
+  //BulkCreateProductsRequestDto
+}
+
+###
+
+@productId=string
+DELETE {{TFA.Backend.Api_HostAddress}}/api/products/{{productId}}
+
+###
+
+GET {{TFA.Backend.Api_HostAddress}}/api/products/{{productId}}
+
+###
+
+PUT {{TFA.Backend.Api_HostAddress}}/api/products/{{productId}}
+
+###
+
+GET {{TFA.Backend.Api_HostAddress}}/api/suppliers
 
 ###
